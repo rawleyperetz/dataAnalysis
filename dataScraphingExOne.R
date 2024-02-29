@@ -21,8 +21,8 @@ fatalCrashTable<- table_selection %>%
     #filter(!row_number() %in% c(1))
 
 fatalCrashTable <- fatalCrashTable %>%  
-  mutate_at( vars(matches('Population')), str_remove_all, ',') %>%
-  mutate_at( vars(matches('millions')), str_remove_all, ',') %>%
+  # mutate_at( vars(matches('Population')), str_remove_all, ',') %>%
+  mutate_at( vars(!matches('State')), str_remove_all, ',') %>%
   mutate_at( vars( !matches('State')), as.numeric)  %>%
   arrange(desc(Deaths))
 
