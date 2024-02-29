@@ -20,23 +20,23 @@ table_fatality <- url %>%
 
 seatBeltDataset <- table_seatbelt %>% 
   html_table(header=FALSE, fill=TRUE) %>% 
-  filter(!row_number() %in% c(1)) %>%
-  row_to_names(row_number = 1) %>% magrittr::set_colnames(c('State','StatPercent','Restrained Number', 'Restrained %','Unrestrained Number','Unrestrained %','Unknown Number','Unknown %','Total Fatal Number')) %>%
-  filter(!row_number() %in% c(1)) 
+  filter(!row_number() %in% c(1,2,3)) %>%
+  magrittr::set_colnames(c('State','StatPercent','Restrained Number', 'Restrained %','Unrestrained Number','Unrestrained %','Unknown Number','Unknown %','Total Fatal Number')) #%>%
+
 
 str(seatBeltDataset)
 
 seatBeltDataset <- seatBeltDataset %>%  
-  mutate_at( vars(!matches('State')), str_remove_all, ',') %>%
+  mutate_at( vars(!matches('State')), str_remove_all, "[^0-9.-]") %>%
   mutate_at( vars( !matches('State')), as.numeric)
 
 fatalCrashTable <- table_fatality %>%
   html_table(header=FALSE, fill=TRUE) %>% 
   filter(!row_number() %in% c(1)) %>%
   row_to_names(row_number = 1) %>%
-  mutate_at( vars(matches('Population')), str_remove_all, ',') %>%
-  mutate_at( vars(matches('millions')), str_remove_all, ',') %>%
+  mutate_at( vars( !matches('State')), str_remove_all, ',') %>%
   mutate_at( vars( !matches('State')), as.numeric)  
+
 
 merging_two <- merge(fatalCrashTable, seatBeltDataset, by = 'State')
 
